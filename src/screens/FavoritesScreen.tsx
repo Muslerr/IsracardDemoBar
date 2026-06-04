@@ -2,8 +2,10 @@ import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import { useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { filterFavoriteBooks, sortBooks } from '../features/books/booksUtils';
+import { BooksSortOption } from '../features/books/booksTypes';
+import { removeFavorite } from '../features/favorites/favoritesSlice';
 import { RootStackParamList } from '../navigation/navigationTypes';
 import BooksList from '../components/BooksList';
 import SearchBar from '../components/SearchBar';
@@ -21,8 +23,9 @@ type FavoritesNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function FavoritesScreen() {
   const navigation = useNavigation<FavoritesNavigationProp>();
+  const dispatch = useAppDispatch();
   const [searchText, setSearchText] = useState('');
-  const [sortOption, setSortOption] = useState<'title' | 'pages' | 'releaseDate'>('title');
+  const [sortOption, setSortOption] = useState<BooksSortOption>('title');
   const favorites = useAppSelector(state => state.favorites.books);
 
   const favoritesToShow = useMemo(() => {
@@ -51,6 +54,8 @@ export default function FavoritesScreen() {
             <BooksList
               books={favoritesToShow}
               onBookPress={book => navigation.navigate('BookDetails', { bookId: book.id })}
+              onRemovePress={bookId => dispatch(removeFavorite(bookId))}
+              showRemoveButton
               emptyMessage="No favorites match your search."
             />
           </>

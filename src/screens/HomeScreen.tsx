@@ -11,6 +11,7 @@ import {
   isBooksCacheValid,
   sortBooks,
 } from '../features/books/booksUtils';
+import { BooksSortOption } from '../features/books/booksTypes';
 import { setBooksCache } from '../features/books/booksCacheSlice';
 import { RootStackParamList } from '../navigation/navigationTypes';
 import BooksList from '../components/BooksList';
@@ -23,18 +24,18 @@ import ScreenContainer from '../components/ScreenContainer';
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-const sortOptions = [
+const sortOptions: ReadonlyArray<{ value: BooksSortOption; label: string }> = [
   { value: 'title', label: 'Title' },
   { value: 'pages', label: 'Pages' },
   { value: 'releaseDate', label: 'Release Date' },
-] as const;
+];
 
 export default function HomeScreen() {
   const navigation = useNavigation<HomeNavigationProp>();
   const dispatch = useAppDispatch();
   const booksCache = useAppSelector(state => state.booksCache);
   const [searchText, setSearchText] = useState('');
-  const [sortOption, setSortOption] = useState<'title' | 'pages' | 'releaseDate'>('title');
+  const [sortOption, setSortOption] = useState<BooksSortOption>('title');
   const cacheValid =
     isBooksCacheValid(booksCache.lastFetchedAt) && booksCache.items.length > 0;
   const queryArg = cacheValid ? skipToken : undefined;
