@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Book } from '../features/books/booksTypes';
@@ -21,6 +22,14 @@ export default function BooksList({
   showRemoveButton,
   emptyMessage,
 }: Props) {
+  const listRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (books.length > 0) {
+      listRef.current?.scrollToIndex({ index: 0, animated: false, viewPosition: 0 });
+    }
+  }, [books]);
+
   if (books.length === 0) {
     return <EmptyState message={emptyMessage ?? 'No books found.'} />;
   }
@@ -28,6 +37,8 @@ export default function BooksList({
   return (
     <View style={styles.listContainer}>
       <FlashList
+        key={`list-${books.length}`}
+        ref={listRef}
         data={books}
         renderItem={({ item }) => (
           <BookCard
