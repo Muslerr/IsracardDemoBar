@@ -1,26 +1,75 @@
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import { useMemo, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import { useAppSelector } from '../hooks/reduxHooks';
+import { filterFavoriteBooks, sortBooks } from '../features/books/booksUtils';
+import { RootStackParamList } from '../navigation/navigationTypes';
+import BooksList from '../components/BooksList';
+import SearchBar from '../components/SearchBar';
+import SortMenu from '../components/SortMenu';
+import EmptyState from '../components/EmptyState';
+import ScreenContainer from '../components/ScreenContainer';
+
+const sortOptions = [
+  { value: 'title', label: 'Title' },
+  { value: 'pages', label: 'Pages' },
+  { value: 'releaseDate', label: 'Release Date' },
+] as const;
+
+type FavoritesNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function FavoritesScreen() {
+  const navigation = useNavigation<FavoritesNavigationProp>();
+  const [searchText, setSearchText] = useState('');
+  const [sortOption, setSortOption] = useState<'title' | 'pages' | 'releaseDate'>('title');
+  const favorites = useAppSelector(state => state.favorites.books);
+
+  const favoritesToShow = useMemo(() => {
+    const filtered = filterFavoriteBooks(favorites, searchText);
+    return sortBooks(filtered, sortOption);
+  }, [favorites, searchText, sortOption]);
+
+  const hasFavorites = favorites.length > 0;
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>Favorites</Text>
-      <Text style={styles.body}>This is the Favorites tab placeholder.</Text>
-    </SafeAreaView>
+    <ScreenContainer>
+      <View style={styles.content}>
+        <Text style={styles.heading}>Favorites</Text>
+        {hasFavorites ? (
+          <>
+            <SearchBar
+              value={searchText}
+              onChangeText={setSearchText}
+              placeholder="Search favorites..."
+            />
+            <SortMenu
+              options={sortOptions}
+              value={sortOption}
+              onChange={value => setSortOption(value as 'title' | 'pages' | 'releaseDate')}
+            />
+            <BooksList
+              books={favoritesToShow}
+              onSelect={book => navigation.navigate('BookDetails', book)}
+              emptyMessage="No favorites match your search."
+            />
+          </>
+        ) : (
+          <EmptyState message="No favorite books yet. Add a favorite from the Home tab." />
+        )}
+      </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
     padding: 16,
-    justifyContent: 'center',
   },
   heading: {
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 12,
-  },
-  body: {
-    fontSize: 16,
   },
 });
