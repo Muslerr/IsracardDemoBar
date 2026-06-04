@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
-import AppNavigator from './src/navigation/AppNavigator';
+import RootNavigator from './src/navigation/RootNavigator';
 import { store } from './src/store';
 
 export default function App() {
@@ -11,7 +11,7 @@ export default function App() {
       <SafeAreaProvider>
         <StatusBar barStyle="dark-content" />
         <NavigationContainer>
-          <AppNavigator />
+          <RootNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </Provider>

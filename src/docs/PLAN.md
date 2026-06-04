@@ -1,4 +1,4 @@
-# PLAN.md — IsracardDemoBar React Native Assignment
+git pull # PLAN.md — IsracardDemoBar React Native Assignment
 
 This plan is optimized for finishing a safe MVP first, while leaving clean infrastructure for bonus features.
 
