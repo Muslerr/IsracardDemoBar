@@ -20,6 +20,7 @@ import ErrorState from '../components/ErrorState';
 import SearchBar from '../components/SearchBar';
 import SortMenu from '../components/SortMenu';
 import ScreenContainer from '../components/ScreenContainer';
+import useDebounce from '../hooks/useDebounce';
 
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -35,6 +36,7 @@ export default function HomeScreen() {
   const dispatch = useAppDispatch();
   const booksCache = useAppSelector(state => state.booksCache);
   const [searchText, setSearchText] = useState('');
+  const debouncedSearchText = useDebounce(searchText, 300);
   const [sortOption, setSortOption] = useState<BooksSortOption>('title');
   const cacheValid =
     isBooksCacheValid(booksCache.lastFetchedAt) && booksCache.items.length > 0;
@@ -58,9 +60,9 @@ export default function HomeScreen() {
     : [];
 
   const booksToShow = useMemo(() => {
-    const filtered = filterBooksByTitle(rawBooks, searchText);
+    const filtered = filterBooksByTitle(rawBooks, debouncedSearchText);
     return sortBooks(filtered, sortOption);
-  }, [rawBooks, searchText, sortOption]);
+  }, [rawBooks, debouncedSearchText, sortOption]);
 
   return (
     <ScreenContainer>

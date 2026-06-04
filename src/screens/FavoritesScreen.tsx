@@ -12,6 +12,7 @@ import SearchBar from '../components/SearchBar';
 import SortMenu from '../components/SortMenu';
 import EmptyState from '../components/EmptyState';
 import ScreenContainer from '../components/ScreenContainer';
+import useDebounce from '../hooks/useDebounce';
 
 const sortOptions = [
   { value: 'title', label: 'Title' },
@@ -25,13 +26,14 @@ export default function FavoritesScreen() {
   const navigation = useNavigation<FavoritesNavigationProp>();
   const dispatch = useAppDispatch();
   const [searchText, setSearchText] = useState('');
+  const debouncedSearchText = useDebounce(searchText, 300);
   const [sortOption, setSortOption] = useState<BooksSortOption>('title');
   const favorites = useAppSelector(state => state.favorites.books);
 
   const favoritesToShow = useMemo(() => {
-    const filtered = filterFavoriteBooks(favorites, searchText);
+    const filtered = filterFavoriteBooks(favorites, debouncedSearchText);
     return sortBooks(filtered, sortOption);
-  }, [favorites, searchText, sortOption]);
+  }, [favorites, debouncedSearchText, sortOption]);
 
   const hasFavorites = favorites.length > 0;
 
