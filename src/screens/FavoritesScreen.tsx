@@ -50,7 +50,7 @@ export default function FavoritesScreen() {
             />
             <BooksList
               books={favoritesToShow}
-              onBookPress={book => navigation.navigate('BookDetails', book)}
+              onBookPress={book => navigation.navigate('BookDetails', { bookId: book.id })}
               emptyMessage="No favorites match your search."
             />
           </>

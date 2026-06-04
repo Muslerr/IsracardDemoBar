@@ -85,7 +85,7 @@ export default function HomeScreen() {
         {!isLoading && !error && (
           <BooksList
             books={booksToShow}
-            onBookPress={book => navigation.navigate('BookDetails', book)}
+            onBookPress={book => navigation.navigate('BookDetails', { bookId: book.id })}
             emptyMessage="No books available yet."
           />
         )}

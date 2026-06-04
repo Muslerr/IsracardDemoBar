@@ -1,41 +1,82 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { RootStackParamList } from '../navigation/navigationTypes';
+import { selectFavoriteById } from '../features/favorites/favoritesSelectors';
+import { toggleFavorite } from '../features/favorites/favoritesSlice';
+import ScreenContainer from '../components/ScreenContainer';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BookDetails'>;
 
-export default function BookDetailsScreen({ route }: Props) {
-  const { title, releaseDate, cover, description, pages } = route.params;
+export default function BookDetailsScreen({ navigation, route }: Props) {
+  const { bookId } = route.params;
+  const dispatch = useAppDispatch();
+
+  const cachedBook = useAppSelector(state =>
+    state.booksCache.items.find(book => book.id === bookId),
+  );
+  const favoriteBook = useAppSelector(state => selectFavoriteById(state, bookId));
+  const [book] = React.useState(() => cachedBook ?? favoriteBook);
+  const isFavorite = Boolean(favoriteBook);
+
+  if (!book) {
+    return (
+      <ScreenContainer>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.title}>Book not found</Text>
+          <Text style={styles.body}>
+            This book is not available in cache or favorites.
+          </Text>
+          <Button title="Go back" onPress={() => navigation.goBack()} />
+        </View>
+      </ScreenContainer>
+    );
+  }
+
+  const handleToggleFavorite = () => {
+    dispatch(toggleFavorite(book));
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{releaseDate}</Text>
-        <Image source={{ uri: cover }} style={styles.cover} />
+    <ScreenContainer>
+      <View style={styles.content}>
+        <Text style={styles.title}>{book.title}</Text>
+        <Text style={styles.subtitle}>{book.releaseDate}</Text>
+        <Image source={{ uri: book.cover }} style={styles.cover} />
         <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.body}>{description}</Text>
+        <Text style={styles.body}>{book.description}</Text>
         <View style={styles.metaRow}>
           <Text style={styles.metaLabel}>Pages:</Text>
-          <Text style={styles.metaValue}>{pages}</Text>
+          <Text style={styles.metaValue}>{book.pages}</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        <View style={styles.buttonRow}>
+          <Button
+            title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            onPress={handleToggleFavorite}
+          />
+        </View>
+      </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   content: {
+    flex: 1,
     padding: 16,
+  },
+  emptyContainer: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 8,
+    color: '#111827',
   },
   subtitle: {
     fontSize: 16,
@@ -58,6 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     marginBottom: 16,
+    color: '#111827',
   },
   metaRow: {
     flexDirection: 'row',
@@ -72,5 +114,8 @@ const styles = StyleSheet.create({
   },
   metaValue: {
     fontSize: 16,
+  },
+  buttonRow: {
+    marginTop: 20,
   },
 });
