@@ -107,11 +107,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 12,
   },
-  statusText: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 12,
-  },
 });
 
 

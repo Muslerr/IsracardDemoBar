@@ -11,7 +11,6 @@ type Props = {
   onBookPress: (book: Book) => void;
   onRemovePress?: (bookId: string) => void;
   showRemoveButton?: boolean;
-  viewMode?: 'list' | 'grid';
   emptyMessage?: string;
 };
 
