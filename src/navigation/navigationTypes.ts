@@ -6,7 +6,7 @@ export type MainTabsParamList = {
 export type RootStackParamList = {
   MainTabs: undefined;
   BookDetails: {
-    bookId: string;
+    id: string;
     title: string;
     releaseDate: string;
     cover: string;

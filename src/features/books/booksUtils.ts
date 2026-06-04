@@ -41,7 +41,7 @@ export function normalizeBooksResponse(apiBooks: unknown): Book[] {
     .filter((book): book is Book => book !== null);
 }
 
-export function isCacheValid(lastFetchedAt: number | null): boolean {
+export function isBooksCacheValid(lastFetchedAt: number | null): boolean {
   if (lastFetchedAt === null) {
     return false;
   }

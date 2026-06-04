@@ -12,6 +12,7 @@ import {
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import rootReducer from './rootReducer';
+import { booksApi } from '../api/booksApi';
 
 export type RootState = ReturnType<typeof rootReducer>;
 
@@ -30,7 +31,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(booksApi.middleware),
 });
 
 export const persistor = persistStore(store);
