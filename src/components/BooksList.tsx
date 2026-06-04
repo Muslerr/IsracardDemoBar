@@ -7,11 +7,20 @@ import { spacing } from '../theme';
 
 type Props = {
   books: Book[];
-  onSelect: (book: Book) => void;
+  onBookPress: (book: Book) => void;
+  onRemovePress?: (bookId: string) => void;
+  showRemoveButton?: boolean;
+  viewMode?: 'list' | 'grid';
   emptyMessage?: string;
 };
 
-export default function BooksList({ books, onSelect, emptyMessage }: Props) {
+export default function BooksList({
+  books,
+  onBookPress,
+  onRemovePress,
+  showRemoveButton,
+  emptyMessage,
+}: Props) {
   if (books.length === 0) {
     return <EmptyState message={emptyMessage ?? 'No books found.'} />;
   }
@@ -20,7 +29,14 @@ export default function BooksList({ books, onSelect, emptyMessage }: Props) {
     <View style={styles.listContainer}>
       <FlashList
         data={books}
-        renderItem={({ item }) => <BookCard book={item} onPress={onSelect} />}
+        renderItem={({ item }) => (
+          <BookCard
+            book={item}
+            onPress={onBookPress}
+            onRemovePress={onRemovePress}
+            showRemoveButton={showRemoveButton}
+          />
+        )}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.content}
       />

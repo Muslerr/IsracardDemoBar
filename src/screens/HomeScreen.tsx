@@ -65,11 +65,7 @@ export default function HomeScreen() {
     <ScreenContainer>
       <View style={styles.content}>
         <Text style={styles.heading}>Home</Text>
-        {cacheValid && (
-          <Text style={styles.statusText}>
-            Showing cached books from the last 24 hours.
-          </Text>
-        )}
+        
         <SearchBar value={searchText} onChangeText={setSearchText} />
         <SortMenu
           options={sortOptions}
@@ -89,7 +85,7 @@ export default function HomeScreen() {
         {!isLoading && !error && (
           <BooksList
             books={booksToShow}
-            onSelect={book => navigation.navigate('BookDetails', book)}
+            onBookPress={book => navigation.navigate('BookDetails', book)}
             emptyMessage="No books available yet."
           />
         )}
