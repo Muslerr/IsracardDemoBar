@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import ThemedText from '../components/ui/ThemedText';
@@ -15,6 +15,8 @@ import SortMenu from '../components/SortMenu';
 import EmptyState from '../components/EmptyState';
 import ScreenContainer from '../components/ScreenContainer';
 import useDebounce from '../hooks/useDebounce';
+import { setViewMode } from '../features/preferences/preferencesSlice';
+import { useTheme } from '../theme/ThemeProvider';
 
 const sortOptions = [
   { value: 'title', label: 'Title' },
@@ -31,6 +33,8 @@ export default function FavoritesScreen() {
   const debouncedSearchText = useDebounce(searchText, 300);
   const [sortOption, setSortOption] = useState<BooksSortOption>('title');
   const favorites = useAppSelector(state => state.favorites.books);
+  const viewMode = useAppSelector(state => state.preferences.viewMode);
+  const { colors } = useTheme();
 
   const favoritesToShow = useMemo(() => {
     const filtered = filterFavoriteBooks(favorites, debouncedSearchText);
@@ -39,10 +43,26 @@ export default function FavoritesScreen() {
 
   const hasFavorites = favorites.length > 0;
 
+  const handleToggleViewMode = () => {
+    dispatch(setViewMode(viewMode === 'list' ? 'grid' : 'list'));
+  };
+
   return (
     <ScreenContainer>
       <ThemedView style={styles.content}>
-        <ThemedText style={styles.heading}>Favorites</ThemedText>
+        <ThemedView style={styles.headerRow}>
+          <ThemedText style={styles.heading}>Favorites</ThemedText>
+          {hasFavorites && (
+            <TouchableOpacity
+              style={[styles.viewToggleButton, { backgroundColor: colors.primary }]}
+              onPress={handleToggleViewMode}
+            >
+              <ThemedText style={styles.viewToggleText}>
+                {viewMode === 'list' ? '▦' : '☰'}
+              </ThemedText>
+            </TouchableOpacity>
+          )}
+        </ThemedView>
         {hasFavorites ? (
           <>
             <SearchBar
@@ -61,6 +81,7 @@ export default function FavoritesScreen() {
               onRemovePress={bookId => dispatch(removeFavorite(bookId))}
               showRemoveButton
               emptyMessage="No favorites match your search."
+              viewMode={viewMode}
             />
           </>
         ) : (
@@ -76,9 +97,25 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   heading: {
     fontSize: 24,
     fontWeight: '700',
-    marginBottom: 12,
+  },
+  viewToggleButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewToggleText: {
+    fontSize: 16,
+    color: '#ffffff',
   },
 });

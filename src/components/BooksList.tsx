@@ -13,6 +13,7 @@ type Props = {
   onRemovePress?: (bookId: string) => void;
   showRemoveButton?: boolean;
   emptyMessage?: string;
+  viewMode?: 'list' | 'grid';
 };
 
 export default function BooksList({
@@ -21,8 +22,10 @@ export default function BooksList({
   onRemovePress,
   showRemoveButton,
   emptyMessage,
+  viewMode = 'list',
 }: Props) {
   const listRef = useRef<any>(null);
+  const numColumns = viewMode === 'grid' ? 2 : 1;
 
   useEffect(() => {
     if (books.length > 0) {
@@ -37,9 +40,10 @@ export default function BooksList({
   return (
     <ThemedView style={styles.listContainer}>
       <FlashList
-        key={`list-${books.length}`}
+        key={`list-${books.length}-${viewMode}`}
         ref={listRef}
         data={books}
+        numColumns={numColumns}
         renderItem={({ item }) => (
           <BookCard
             book={item}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -23,6 +23,8 @@ import SearchBar from '../components/SearchBar';
 import SortMenu from '../components/SortMenu';
 import ScreenContainer from '../components/ScreenContainer';
 import useDebounce from '../hooks/useDebounce';
+import { setViewMode } from '../features/preferences/preferencesSlice';
+import { useTheme } from '../theme/ThemeProvider';
 
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -37,10 +39,12 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeNavigationProp>();
   const dispatch = useAppDispatch();
   const booksCache = useAppSelector(state => state.booksCache);
+  const viewMode = useAppSelector(state => state.preferences.viewMode);
   const [searchText, setSearchText] = useState('');
   const debouncedSearchText = useDebounce(searchText, 300);
   const [sortOption, setSortOption] = useState<BooksSortOption>('title');
   const [isRetrying, setIsRetrying] = useState(false);
+  const { colors } = useTheme();
   const cacheValid =
     isBooksCacheValid(booksCache.lastFetchedAt) && booksCache.items.length > 0;
   const queryArg = cacheValid ? skipToken : undefined;
@@ -76,10 +80,24 @@ export default function HomeScreen() {
     refetch();
   };
 
+  const handleToggleViewMode = () => {
+    dispatch(setViewMode(viewMode === 'list' ? 'grid' : 'list'));
+  };
+
   return (
     <ScreenContainer>
       <ThemedView style={styles.content}>
-        <ThemedText style={styles.heading}>Home</ThemedText>
+        <ThemedView style={styles.headerRow}>
+          <ThemedText style={styles.heading}>Home</ThemedText>
+          <TouchableOpacity
+            style={[styles.viewToggleButton, { backgroundColor: colors.primary }]}
+            onPress={handleToggleViewMode}
+          >
+            <ThemedText style={styles.viewToggleText}>
+              {viewMode === 'list' ? '▦' : '☰'}
+            </ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
         
         <SearchBar value={searchText} onChangeText={setSearchText} />
         <SortMenu
@@ -103,6 +121,7 @@ export default function HomeScreen() {
             books={booksToShow}
             onBookPress={book => navigation.navigate('BookDetails', { bookId: book.id })}
             emptyMessage="No books available yet."
+            viewMode={viewMode}
           />
         )}
       </ThemedView>
@@ -115,10 +134,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   heading: {
     fontSize: 24,
     fontWeight: '700',
-    marginBottom: 12,
+  },
+  viewToggleButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  viewToggleText: {
+    fontSize: 16,
+    color: '#ffffff',
   },
 });
 
