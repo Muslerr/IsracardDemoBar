@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Book } from '../features/books/booksTypes';
 import BookCard from './BookCard';
 import EmptyState from './EmptyState';
+import ThemedView from './ui/ThemedView';
 import { spacing } from '../theme';
 
 type Props = {
@@ -34,7 +35,7 @@ export default function BooksList({
   }
 
   return (
-    <View style={styles.listContainer}>
+    <ThemedView style={styles.listContainer}>
       <FlashList
         key={`list-${books.length}`}
         ref={listRef}
@@ -50,7 +51,7 @@ export default function BooksList({
         keyExtractor={item => item.id}
         contentContainerStyle={styles.content}
       />
-    </View>
+    </ThemedView>
   );
 }
 

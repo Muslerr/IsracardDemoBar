@@ -40,6 +40,7 @@ export default function HomeScreen() {
   const [searchText, setSearchText] = useState('');
   const debouncedSearchText = useDebounce(searchText, 300);
   const [sortOption, setSortOption] = useState<BooksSortOption>('title');
+  const [isRetrying, setIsRetrying] = useState(false);
   const cacheValid =
     isBooksCacheValid(booksCache.lastFetchedAt) && booksCache.items.length > 0;
   const queryArg = cacheValid ? skipToken : undefined;
@@ -52,8 +53,12 @@ export default function HomeScreen() {
       dispatch(
         setBooksCache({ items: normalizedBooks, lastFetchedAt: Date.now() }),
       );
+      setIsRetrying(false);
     }
-  }, [data, dispatch, isSuccess]);
+    if (error) {
+      setIsRetrying(false);
+    }
+  }, [data, dispatch, isSuccess, error]);
 
   const rawBooks = cacheValid
     ? booksCache.items
@@ -65,6 +70,11 @@ export default function HomeScreen() {
     const filtered = filterBooksByTitle(rawBooks, debouncedSearchText);
     return sortBooks(filtered, sortOption);
   }, [rawBooks, debouncedSearchText, sortOption]);
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+    refetch();
+  };
 
   return (
     <ScreenContainer>
@@ -83,7 +93,8 @@ export default function HomeScreen() {
         {error && (
           <ErrorState
             message="Unable to load books. Please try again."
-            onRetry={refetch}
+            onRetry={handleRetry}
+            isRetrying={isRetrying}
           />
         )}
 

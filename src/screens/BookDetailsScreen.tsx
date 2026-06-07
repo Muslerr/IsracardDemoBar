@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ThemedText from '../components/ui/ThemedText';
 import ThemedButton from '../components/ui/ThemedButton';
@@ -34,7 +34,11 @@ export default function BookDetailsScreen({ navigation, route }: Props) {
           <ThemedText style={styles.body}>
             This book is not available in cache or favorites.
           </ThemedText>
-          <Button title="Go back" onPress={() => navigation.goBack()} />
+          <ThemedButton
+            title="Go back"
+            onPress={() => navigation.goBack()}
+            style={styles.goBackButton}
+          />
         </ThemedView>
       </ScreenContainer>
     );
@@ -83,6 +87,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 8,
+  },
+  goBackButton: {
+    width: '100%',
+    marginTop: 12,
   },
   subtitle: {
     fontSize: 16,

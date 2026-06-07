@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Book } from '../features/books/booksTypes';
 import { spacing } from '../theme';
 import { useTheme } from '../theme/ThemeProvider';
+import ThemedView from './ui/ThemedView';
+import ThemedText from './ui/ThemedText';
+import ThemedButton from './ui/ThemedButton';
 
 type Props = {
   book: Book;
@@ -32,19 +35,19 @@ export default function BookCard({
         style={[styles.cover, { backgroundColor: colors.border }]}
         onError={() => setImageError(true)}
       />
-      <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.text }]}>{book.title}</Text>
-        <Text style={[styles.meta, { color: colors.muted }]}>{book.releaseDate}</Text>
-        <Text style={[styles.pages, { color: colors.text }]}>{book.pages} pages</Text>
+      <ThemedView style={styles.content}>
+        <ThemedText style={styles.title}>{book.title}</ThemedText>
+        <ThemedText style={styles.meta}>{book.releaseDate}</ThemedText>
+        <ThemedText style={styles.pages}>{book.pages} pages</ThemedText>
         {showRemoveButton && onRemovePress ? (
-          <TouchableOpacity
-            style={[styles.removeButton, { backgroundColor: colors.warning }]}
+          <ThemedButton
+            title="Remove"
             onPress={() => onRemovePress(book.id)}
-          >
-            <Text style={[styles.removeText, { color: colors.surface }]}>Remove</Text>
-          </TouchableOpacity>
+            style={[styles.removeButton, { backgroundColor: colors.warning }]}
+            textStyle={{ color: colors.surface }}
+          />
         ) : null}
-      </View>
+      </ThemedView>
     </TouchableOpacity>
   );
 }
