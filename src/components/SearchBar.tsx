@@ -1,5 +1,7 @@
-import { StyleSheet, TextInput, View } from 'react-native';
-import { colors, spacing } from '../theme';
+import { StyleSheet, TextInput } from 'react-native';
+import { spacing } from '../theme';
+import { useTheme } from '../theme/ThemeProvider';
+import ThemedView from './ui/ThemedView';
 
 type Props = {
   value: string;
@@ -8,17 +10,26 @@ type Props = {
 };
 
 export default function SearchBar({ value, onChangeText, placeholder }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder ?? 'Search books...'}
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            backgroundColor: colors.surface,
+            color: colors.text,
+            borderColor: colors.border,
+          },
+        ]}
         placeholderTextColor={colors.muted}
         returnKeyType="search"
       />
-    </View>
+    </ThemedView>
   );
 }
 
@@ -27,12 +38,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   input: {
-    backgroundColor: colors.surface,
     borderRadius: 12,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    color: colors.text,
     borderWidth: 1,
-    borderColor: colors.border,
   },
 });

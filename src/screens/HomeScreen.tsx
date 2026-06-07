@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import ThemedText from '../components/ui/ThemedText';
+import ThemedView from '../components/ui/ThemedView';
 import { useGetBooksQuery } from '../api/booksApi';
 import {
   filterBooksByTitle,
@@ -66,8 +68,8 @@ export default function HomeScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.content}>
-        <Text style={styles.heading}>Home</Text>
+      <ThemedView style={styles.content}>
+        <ThemedText style={styles.heading}>Home</ThemedText>
         
         <SearchBar value={searchText} onChangeText={setSearchText} />
         <SortMenu
@@ -92,7 +94,7 @@ export default function HomeScreen() {
             emptyMessage="No books available yet."
           />
         )}
-      </View>
+      </ThemedView>
     </ScreenContainer>
   );
 }

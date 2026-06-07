@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Book } from '../features/books/booksTypes';
-import { colors, spacing } from '../theme';
+import { spacing } from '../theme';
+import { useTheme } from '../theme/ThemeProvider';
 
 type Props = {
   book: Book;
@@ -19,24 +20,28 @@ export default function BookCard({
   showRemoveButton,
 }: Props) {
   const [imageError, setImageError] = useState(false);
+  const { colors } = useTheme();
 
   return (
-    <TouchableOpacity style={styles.container} onPress={() => onPress(book)}>
+    <TouchableOpacity
+      style={[styles.container, { backgroundColor: colors.surface }]}
+      onPress={() => onPress(book)}
+    >
       <Image
         source={{ uri: imageError ? fallbackCover : book.cover }}
-        style={styles.cover}
+        style={[styles.cover, { backgroundColor: colors.border }]}
         onError={() => setImageError(true)}
       />
       <View style={styles.content}>
-        <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.meta}>{book.releaseDate}</Text>
-        <Text style={styles.pages}>{book.pages} pages</Text>
+        <Text style={[styles.title, { color: colors.text }]}>{book.title}</Text>
+        <Text style={[styles.meta, { color: colors.muted }]}>{book.releaseDate}</Text>
+        <Text style={[styles.pages, { color: colors.text }]}>{book.pages} pages</Text>
         {showRemoveButton && onRemovePress ? (
           <TouchableOpacity
-            style={styles.removeButton}
+            style={[styles.removeButton, { backgroundColor: colors.warning }]}
             onPress={() => onRemovePress(book.id)}
           >
-            <Text style={styles.removeText}>Remove</Text>
+            <Text style={[styles.removeText, { color: colors.surface }]}>Remove</Text>
           </TouchableOpacity>
         ) : null}
       </View>
@@ -48,7 +53,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     borderRadius: 16,
-    backgroundColor: colors.surface,
     padding: spacing.md,
     marginBottom: spacing.md,
     shadowColor: '#000',
@@ -61,7 +65,6 @@ const styles = StyleSheet.create({
     height: 104,
     borderRadius: 12,
     marginRight: spacing.md,
-    backgroundColor: colors.border,
   },
   content: {
     flex: 1,
@@ -70,16 +73,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '700',
-    color: colors.text,
     marginBottom: 4,
   },
   meta: {
-    color: colors.muted,
     marginBottom: 8,
   },
   pages: {
     fontSize: 13,
-    color: colors.text,
   },
   removeButton: {
     marginTop: spacing.sm,
@@ -87,10 +87,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
     borderRadius: 999,
-    backgroundColor: colors.warning,
   },
   removeText: {
-    color: colors.surface,
     fontSize: 13,
     fontWeight: '600',
   },

@@ -1,18 +1,18 @@
 import { ReactNode } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import { colors } from '../theme';
+import { useTheme } from '../theme/ThemeProvider';
 
 type Props = {
   children: ReactNode;
 };
 
 export default function ScreenContainer({ children }: Props) {
-  return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
+  const { colors } = useTheme();
+  return <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>{children}</SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
 });

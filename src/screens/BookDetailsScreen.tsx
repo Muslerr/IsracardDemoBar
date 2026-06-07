@@ -1,6 +1,10 @@
 import React from 'react';
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import ThemedText from '../components/ui/ThemedText';
+import ThemedButton from '../components/ui/ThemedButton';
+import ThemedView from '../components/ui/ThemedView';
+import { useTheme } from '../theme/ThemeProvider';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { RootStackParamList } from '../navigation/navigationTypes';
 import { selectFavoriteById } from '../features/favorites/favoritesSelectors';
@@ -20,16 +24,18 @@ export default function BookDetailsScreen({ navigation, route }: Props) {
   const [book] = React.useState(() => cachedBook ?? favoriteBook);
   const isFavorite = Boolean(favoriteBook);
 
+  const { colors } = useTheme();
+
   if (!book) {
     return (
       <ScreenContainer>
-        <View style={styles.emptyContainer}>
-          <Text style={styles.title}>Book not found</Text>
-          <Text style={styles.body}>
+        <ThemedView style={styles.emptyContainer}>
+          <ThemedText style={styles.title}>Book not found</ThemedText>
+          <ThemedText style={styles.body}>
             This book is not available in cache or favorites.
-          </Text>
+          </ThemedText>
           <Button title="Go back" onPress={() => navigation.goBack()} />
-        </View>
+        </ThemedView>
       </ScreenContainer>
     );
   }
@@ -40,23 +46,24 @@ export default function BookDetailsScreen({ navigation, route }: Props) {
 
   return (
     <ScreenContainer>
-      <View style={styles.content}>
-        <Text style={styles.title}>{book.title}</Text>
-        <Text style={styles.subtitle}>{book.releaseDate}</Text>
-        <Image source={{ uri: book.cover }} style={styles.cover} />
-        <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.body}>{book.description}</Text>
-        <View style={styles.metaRow}>
-          <Text style={styles.metaLabel}>Pages:</Text>
-          <Text style={styles.metaValue}>{book.pages}</Text>
-        </View>
-        <View style={styles.buttonRow}>
-          <Button
+      <ThemedView style={styles.content}>
+        <ThemedText style={styles.title}>{book.title}</ThemedText>
+        <ThemedText style={styles.subtitle}>{book.releaseDate}</ThemedText>
+        <Image source={{ uri: book.cover }} style={[styles.cover, { backgroundColor: colors.border }]} />
+        <ThemedText style={styles.sectionTitle}>Description</ThemedText>
+        <ThemedText style={styles.body}>{book.description}</ThemedText>
+        <ThemedView style={[styles.metaRow, { borderTopColor: colors.border }]}>
+          <ThemedText style={styles.metaLabel}>Pages:</ThemedText>
+          <ThemedText style={styles.metaValue}>{book.pages}</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.buttonRow}>
+          <ThemedButton
             title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             onPress={handleToggleFavorite}
+            style={{ width: '100%' }}
           />
-        </View>
-      </View>
+        </ThemedView>
+      </ThemedView>
     </ScreenContainer>
   );
 }
@@ -76,11 +83,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 8,
-    color: '#111827',
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
     marginBottom: 16,
   },
   cover: {
@@ -99,14 +104,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     marginBottom: 16,
-    color: '#111827',
   },
   metaRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
   },
   metaLabel: {
     fontSize: 16,

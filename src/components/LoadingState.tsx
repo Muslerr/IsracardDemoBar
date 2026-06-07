@@ -1,12 +1,17 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '../theme';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { spacing } from '../theme';
+import { useTheme } from '../theme/ThemeProvider';
+import ThemedView from './ui/ThemedView';
+import ThemedText from './ui/ThemedText';
 
 export default function LoadingState() {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <ActivityIndicator size="large" color={colors.primary} />
-      <Text style={styles.text}>Loading books…</Text>
-    </View>
+      <ThemedText style={[styles.text]}>Loading books…</ThemedText>
+    </ThemedView>
   );
 }
 
@@ -17,7 +22,6 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: spacing.sm,
-    color: colors.muted,
     fontSize: 16,
   },
 });

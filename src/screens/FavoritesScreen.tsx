@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import ThemedText from '../components/ui/ThemedText';
+import ThemedView from '../components/ui/ThemedView';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { filterFavoriteBooks, sortBooks } from '../features/books/booksUtils';
 import { BooksSortOption } from '../features/books/booksTypes';
@@ -39,8 +41,8 @@ export default function FavoritesScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.content}>
-        <Text style={styles.heading}>Favorites</Text>
+      <ThemedView style={styles.content}>
+        <ThemedText style={styles.heading}>Favorites</ThemedText>
         {hasFavorites ? (
           <>
             <SearchBar
@@ -64,7 +66,7 @@ export default function FavoritesScreen() {
         ) : (
           <EmptyState message="No favorite books yet. Add a favorite from the Home tab." />
         )}
-      </View>
+      </ThemedView>
     </ScreenContainer>
   );
 }

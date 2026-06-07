@@ -1,5 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { colors, spacing } from '../theme';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { spacing } from '../theme';
+import { useTheme } from '../theme/ThemeProvider';
+import ThemedView from './ui/ThemedView';
+import ThemedText from './ui/ThemedText';
 
 type SortOption = {
   value: string;
@@ -13,28 +16,36 @@ type Props = {
 };
 
 export default function SortMenu({ options, value, onChange }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
-      {options.map(option => (
-        <TouchableOpacity
-          key={option.value}
-          style={[
-            styles.button,
-            value === option.value && styles.activeButton,
-          ]}
-          onPress={() => onChange(option.value)}
-        >
-          <Text
+    <ThemedView style={styles.container}>
+      {options.map(option => {
+        const active = value === option.value;
+        return (
+          <TouchableOpacity
+            key={option.value}
             style={[
-              styles.buttonText,
-              value === option.value && styles.activeText,
+              styles.button,
+              {
+                backgroundColor: active ? colors.primary : colors.surface,
+                borderColor: active ? colors.primary : colors.border,
+              },
             ]}
+            onPress={() => onChange(option.value)}
           >
-            {option.label}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+            <ThemedText
+              style={[
+                styles.buttonText,
+                { color: active ? colors.surface : colors.text },
+              ]}
+            >
+              {option.label}
+            </ThemedText>
+          </TouchableOpacity>
+        );
+      })}
+    </ThemedView>
   );
 }
 
@@ -48,21 +59,11 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm,
     borderRadius: 999,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
     marginRight: spacing.xs,
     marginBottom: spacing.xs,
   },
-  activeButton: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
   buttonText: {
-    color: colors.text,
     fontSize: 13,
-  },
-  activeText: {
-    color: colors.surface,
   },
 });

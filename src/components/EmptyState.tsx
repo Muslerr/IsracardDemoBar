@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '../theme';
+import { StyleSheet } from 'react-native';
+import { spacing } from '../theme';
+import ThemedView from './ui/ThemedView';
+import ThemedText from './ui/ThemedText';
 
 type Props = {
   message: string;
@@ -7,9 +9,9 @@ type Props = {
 
 export default function EmptyState({ message }: Props) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.message}>{message}</Text>
-    </View>
+    <ThemedView style={styles.container}>
+      <ThemedText style={[styles.message]}>{message}</ThemedText>
+    </ThemedView>
   );
 }
 
@@ -19,7 +21,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   message: {
-    color: colors.muted,
     fontSize: 16,
     textAlign: 'center',
   },

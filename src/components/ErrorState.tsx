@@ -1,5 +1,8 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '../theme';
+import { Button, StyleSheet } from 'react-native';
+import { spacing } from '../theme';
+import { useTheme } from '../theme/ThemeProvider';
+import ThemedView from './ui/ThemedView';
+import ThemedText from './ui/ThemedText';
 
 type Props = {
   message: string;
@@ -7,12 +10,14 @@ type Props = {
 };
 
 export default function ErrorState({ message, onRetry }: Props) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Something went wrong</Text>
-      <Text style={styles.message}>{message}</Text>
+    <ThemedView style={styles.container}>
+      <ThemedText style={[styles.title]}>Something went wrong</ThemedText>
+      <ThemedText style={[styles.message]}>{message}</ThemedText>
       <Button title="Retry" onPress={onRetry} />
-    </View>
+    </ThemedView>
   );
 }
 
@@ -25,11 +30,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginBottom: spacing.sm,
-    color: colors.text,
   },
   message: {
     marginBottom: spacing.md,
-    color: colors.muted,
     textAlign: 'center',
   },
 });
